@@ -5,8 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Asifiwe Store</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    @yield('css')
+    
     <link href="{{asset('css/all.css')}}" rel="stylesheet" id="stylesheetLight">
+    @yield('css')
     
        
        

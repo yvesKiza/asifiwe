@@ -245,7 +245,7 @@ p {
     <div class="row justify-content-center">
         
         <div class="col text-right">
-            {{ date('Y M d ') }}
+            {{ date('Y M d h:m ') }}
         </div>
             </div>
     <div class="row">
@@ -275,7 +275,11 @@ p {
              
               
               <h4 class="mt-2">
-                total: {{$total}}
+                total: {{$total}}<br>
+                Range: {{$start->format('d M Y')}} - {{$end->format('d M Y')}}<br>
+                @isset($user)
+                cashier : {{$user->name}}
+                 @endisset
               </h4>
              
             </div>
@@ -311,9 +315,11 @@ p {
                   <th class="px-0 bg-transparent border-top-0 text-right">
                     <span class="h5">quantity</span>
                   </th>
+                  @if(!isset($user))
                   <th class="px-0 bg-transparent border-top-0 text-right">
                     <span class="h5">recorded by</span>
                   </th>
+                  @endif
                   <th class="px-0 bg-transparent border-top-0 text-right">
                     <span class="h5">date</span>
                   </th>
@@ -333,9 +339,11 @@ p {
                     <td class="px-0 text-right">
                         {{$c->quantity}}
                       </td>
+                      @if(!isset($user))
                       <td class="px-0 text-right">
                         {{$c->bill->user->name}}
                       </td>
+                      @endif
                   
                      <td class="px-0 text-right">
                         {{$c->created_at}}

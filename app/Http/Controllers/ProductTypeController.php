@@ -15,13 +15,11 @@ class ProductTypeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth','admin']);
     }
     public function index()
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+        
         $types=ProductType::all();
         return view('productTypes.index',compact('types'));
     }
@@ -33,9 +31,7 @@ class ProductTypeController extends Controller
      */
     public function create()
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+        
         return view('productTypes.create');
     }
 
@@ -78,9 +74,7 @@ class ProductTypeController extends Controller
      */
     public function edit($id)
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+       
         $type=ProductType::findOrFail($id);
         return view('productTypes.edit',compact('type'));
     }

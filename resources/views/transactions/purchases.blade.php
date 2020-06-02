@@ -1,5 +1,7 @@
 @extends('layouts.navbar')
 @section('css')
+
+<link rel="stylesheet" href="{{asset('css/daterangepicker.css')}}">
 <style>
 
 .pagination {
@@ -37,6 +39,27 @@
 
 @section('content')
 <div class="container-fluid">
+  <div class="row">
+  <div class="mt-5 float-right " style="width:20rem">
+          
+    <div id="reportrange" class="form-control" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+    <i class="fe fe-calendar"></i>&nbsp;
+    <span></span> <i class="fe fe-chevron-down"></i>
+    </div>
+     </div>
+     <div class="float-left mt-5 pl-5">
+      <form action="{{route('purchase.pdf')}}" method="get" id="form">
+        <input type="hidden" name="start" id="start" value="">
+        <input type="hidden" name="end" id="end" value="">
+        <button class="btn btn-primary"  id="print" type="submit">
+          Print
+        </button>
+      </form>
+    </div>
+  </div>
+    
+
+   <div class="jqueryContent">
 <div class="row justify-content-center">
         <div class="col-12">
           
@@ -103,31 +126,7 @@
         
               </div>
             </div>
-            <div class="row mt-5">
-                 
-                
-                
-              <form method="post" action="{{route('purchaseFilter')}}" class="form-inline">
-                  @csrf
-                <div class="col-md-8 col-12 mt-3">
-                   
-                 <div class="input-group input-daterange">
-              
-                
-                 <input type="text" name="from_date" id="from_date" readonly class="form-control {{ $errors->has('from_date') ? ' is-invalid' : '' }}" value="{{ old('from_date') }}"  />
-                     <div class="input-group-addon pl-3 pr-3">To</div>
-                 <input type="text"  name="to_date" id="to_date" readonly class="form-control {{ $errors->has('to_date') ? ' is-invalid' : '' }}" value="{{ old('to_date') }}" />
-                 </div>
-                </div>
-               
-                <div class="col-md-4 col-12 mt-3">
-                 <button  type="submit" class="btn btn-info btn-sm" value="filter" name="submitButton">Filter</button>
-                 <button   type ="submit" class="btn btn-warning btn-sm" value="refresh" name="submitButton">Refresh</button>
-                 
-                 
-                </div>
-              </form>
-               </div>
+            
              
               </div>
           </div>
@@ -149,9 +148,7 @@
                   </form>
                   
                 </div>
-                <div class="col-auto">
-                 <a href="{{route('purchase.pdf')}}" class="btn btn-primary">print</a>
-              </div>
+               
               </div>
             </div>
             
@@ -229,25 +226,103 @@
                             </table>
                           </div>
             </div>
+            <script type="text/javascript">
+
+              var userList = new List('paymentTable', { 
+                  valueNames:  [ 'no', 'product','expiry_date','quantity','supplier','recorder' ],
+                page: 10,
+                pagination: true
+              });	
+             
+          
+      
+  });
+              
+              </script>
             </div>
         </div>
 </div>
         </div>
-</div>
+
+
 @endsection
 @section('scripts')
+<script src="{{asset('js/moment.min.js')}}"></script>
+<script src="{{asset('js/daterangepicker.js')}}"></script>
 <script type="text/javascript">
 
-var userList = new List('paymentTable', { 
-    valueNames:  [ 'no', 'product','expiry_date','quantity','supplier','recorder' ],
-  page: 10,
-  pagination: true
-});	
-$('.input-daterange').datepicker({
- todayBtn: 'linked',
- format: 'yyyy-mm-dd',
- autoclose: true
+var startDateData;
+var endDateData;
+
+
+
+$(function() {
+
+var start = moment().startOf('month');
+var end =moment().endOf('month');
+
+function cb(start, end) {
+    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    $('#start ').val(start.format('YYYY-MM-DD'));
+    $('#end ').val(end.format('YYYY-MM-DD'));
+}
+
+$('#reportrange').daterangepicker({
+    startDate: start,
+    endDate: end,
+    ranges: {
+       'Today': [moment(), moment()],
+       'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+       'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+       'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+       'This Month': [moment().startOf('month'), moment().endOf('month')],
+       'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    }
+}, cb);
+
+cb(start, end);
+
 });
+$('#reportrange').on('apply.daterangepicker', function(ev, picker) {
+ 
+ startDateData=picker.startDate.format('YYYY-MM-DD');
+ endDateData=picker.endDate.format('YYYY-MM-DD');
+ $('#start ').val(startDateData);
+    $('#end ').val(endDateData);
+ getData();
+});
+
+function getData(){
+ $.ajax({
+                         type: 'GET',
+                         url: '{{route('purchaseFilter')}}',
+                         data: {
+                          
+                           "start": startDateData,
+                           "end":endDateData,
+                           
+                           },
+                       
+                         dataType: 'json',
+                        
+                         
+                         
+                         success: function (data) {
+                           
+                            
+
+                        
+                             $('.jqueryContent').html(data.html);
+                             
+                         },
+                         error: function (xhr, type) {
+                             alert(alert(xhr.responseText));
+                         },
+                        
+                     });
+}
+
+
 
 </script>
 @endsection

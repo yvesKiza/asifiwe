@@ -18,13 +18,11 @@ class ProductController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth','admin']);
     }
     public function index()
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }   
+         
       $medicines=Product::where('deleted',0)->get();
       return view('products.index',compact('medicines'));
     }
@@ -36,9 +34,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+        
         $types=ProductType::pluck('name','id')->all();
         $manufacturers=Manufacturer::where('deleted',0)->pluck('name','id')->all();
         return view('products.create',compact('types','manufacturers'));
@@ -92,9 +88,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+        
         $x=Product::where('deleted',0)->where('id',$id)->firstOrFail();
         return view('products.show',compact('x'));
     }
@@ -107,9 +101,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+       
         $medicine=Product::where('deleted',0)->where('id',$id)->firstOrFail();
         $types=ProductType::pluck('name','id')->all();
         $manufacturers=Manufacturer::where('deleted',0)->pluck('name','id')->all();
@@ -160,9 +152,6 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
         $x =Product::where('deleted',0)->where('id',$id)->firstOrFail();
         $x->deleted=1;
         $x->save();
@@ -171,9 +160,7 @@ class ProductController extends Controller
 
     }
     public function setPrice(Request $request,$id){
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+      
         $x=Product::where('deleted',0)->where('id',$id)->firstOrFail();
         Validator::make($request->all(),[
           
@@ -196,9 +183,6 @@ class ProductController extends Controller
     }
     public function getPrice($id)
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
         $medicine=Product::where('deleted',0)->where('id',$id)->firstOrFail();
         return view('products.price',compact('medicine'));
     }

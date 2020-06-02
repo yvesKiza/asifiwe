@@ -48,7 +48,7 @@
     </div>
      </div>
      <div class="float-left mt-5 pl-5">
-      <form action="{{route('sales.pdf')}}" method="get" id="form">
+      <form action="{{route('purchase.cashier.pdf')}}" method="get" id="form">
         <input type="hidden" name="start" id="start" value="">
         <input type="hidden" name="end" id="end" value="">
         <button class="btn btn-primary"  id="print" type="submit">
@@ -71,20 +71,20 @@
                   
                   <!-- Pretitle -->
                   <h6 class="header-pretitle">
-                    OVERVIEW
+                  My purchases
                   </h6>
 
                   <!-- Title -->
                   <h1 class="header-title">
-                sales
+                  Purchases
                   </h1>
 
                 </div>
                 <div class="col-auto">
                   
                   <!-- Button -->
-                <a href="{{route('create.cart')}}" class="btn btn-primary">
-                    New sale
+                <a href="{{route('purchase.create')}}" class="btn btn-primary">
+                    New Purchase
                   </a>
                   
                 </div>
@@ -99,7 +99,7 @@
       
                             <!-- Title -->
                             <h6 class="card-title text-uppercase text-muted mb-2">
-                             Total sales
+                             Total purchases
                             </h6>
                             
                             <!-- Heading -->
@@ -122,12 +122,13 @@
       
                     </div>
                   </div>
-                  
 
         
               </div>
             </div>
-           
+            
+             
+              </div>
           </div>
 
           <!-- Card -->
@@ -147,8 +148,7 @@
                   </form>
                   
                 </div>
-              
-
+               
               </div>
             </div>
             
@@ -171,10 +171,10 @@
                                   <th scope="col">
                                     <a href="#" class="text-muted sort" data-sort="quantity">quantity</a>
                                   </th>
-                                 
                                   <th scope="col">
-                                    <a href="#" class="text-muted sort" data-sort="recorder">recorded by</a>
+                                    <a href="#" class="text-muted sort" data-sort="supplier">supplier</a>
                                   </th>
+                                 
                                   <th scope="col">
                                     <a href="#" class="text-muted sort" data-sort="date">Added on</a>
                                   </th>
@@ -192,11 +192,11 @@
                              
                                   <td class="product">{{$x->product->full_name}}</td>
                                   <td class="expiry_date">{{$x->expiry_date}}</td>
-                                  <td class="price">{{$x->selling_price}}</td>
+                                  <td class="price">{{$x->buying_price}}</td>
                                
                                   <td class="quantity">{{$x->quantity}}</td>
-                                 
-                                  <td class="recorder">{{$x->bill->user->name}}</td>
+                                  <td class="supplier">{{$x->supplier->name}}</td>
+                            
                                   <td class="date"><time>{{$x->created_at->format('d M Y')}}</time></td>
                                 
                                 
@@ -227,17 +227,21 @@
             <script type="text/javascript">
 
               var userList = new List('paymentTable', { 
-                  valueNames:  [ 'no', 'product','expiry_date','quantity','supplier','recorder' ],
+                  valueNames:  [ 'no', 'product','expiry_date','quantity','supplier','date' ],
                 page: 10,
                 pagination: true
               });	
-            </script>
-
+             
+          
+      
+  });
+              
+              </script>
             </div>
         </div>
 </div>
         </div>
-</div>
+
 
 @endsection
 @section('scripts')
@@ -289,7 +293,7 @@ $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
 function getData(){
  $.ajax({
                          type: 'GET',
-                         url: '{{route('salesFilter')}}',
+                         url: '{{route('purchaseFilter')}}',
                          data: {
                           
                            "start": startDateData,

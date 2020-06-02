@@ -48,7 +48,7 @@
     </div>
      </div>
      <div class="float-left mt-5 pl-5">
-      <form action="{{route('sales.pdf')}}" method="get" id="form">
+      <form action="{{route('sales.cashier.pdf')}}" method="get" id="form">
         <input type="hidden" name="start" id="start" value="">
         <input type="hidden" name="end" id="end" value="">
         <button class="btn btn-primary"  id="print" type="submit">
@@ -71,7 +71,7 @@
                   
                   <!-- Pretitle -->
                   <h6 class="header-pretitle">
-                    OVERVIEW
+                   My sales
                   </h6>
 
                   <!-- Title -->
@@ -172,9 +172,7 @@
                                     <a href="#" class="text-muted sort" data-sort="quantity">quantity</a>
                                   </th>
                                  
-                                  <th scope="col">
-                                    <a href="#" class="text-muted sort" data-sort="recorder">recorded by</a>
-                                  </th>
+                                
                                   <th scope="col">
                                     <a href="#" class="text-muted sort" data-sort="date">Added on</a>
                                   </th>
@@ -196,7 +194,7 @@
                                
                                   <td class="quantity">{{$x->quantity}}</td>
                                  
-                                  <td class="recorder">{{$x->bill->user->name}}</td>
+                              
                                   <td class="date"><time>{{$x->created_at->format('d M Y')}}</time></td>
                                 
                                 
@@ -227,7 +225,7 @@
             <script type="text/javascript">
 
               var userList = new List('paymentTable', { 
-                  valueNames:  [ 'no', 'product','expiry_date','quantity','supplier','recorder' ],
+                  valueNames:  [ 'no', 'product','expiry_date','quantity','date' ],
                 page: 10,
                 pagination: true
               });	
@@ -289,7 +287,7 @@ $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
 function getData(){
  $.ajax({
                          type: 'GET',
-                         url: '{{route('salesFilter')}}',
+                         url: '{{route('cashier.salesFilter')}}',
                          data: {
                           
                            "start": startDateData,

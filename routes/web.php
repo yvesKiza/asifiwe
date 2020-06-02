@@ -49,16 +49,38 @@ Route::get('checkout/create', 'TransactionController@bringCheckout')->name('brin
 Route::Post('checkout','TransactionController@checkout');
 Route::get('users/create', 'UserController@getUser');
 Route::get('stock/', 'TransactionController@getStock')->name('stock.index');
-Route::get('purchases/', 'TransactionController@getPurchases')->name('purchase.index');
-Route::get('sales/', 'TransactionController@getSales')->name('sales.index');
-Route::get('bill/{id}','TransactionController@getBill')->name('bill.show');
-Route::get('bill/{id}/pdf','TransactionController@downloadPdf')->name('bill.pdf');
-Route::get('purchases/pdf','TransactionController@purchasePDF')->name('purchase.pdf');
+
+Route::get('sales/', 'TransactionAdmin@getSales')->name('sales.index');
+Route::get('sales/pdf/','TransactionAdmin@salesPDF')->name('sales.pdf');
+Route::get('sales/filter/','TransactionAdmin@salesFilter')->name('salesFilter');
+
+Route::get('purchases/', 'TransactionAdmin@getPurchases')->name('purchase.index');
+Route::get('purchases/pdf','TransactionAdmin@purchasePDF')->name('purchase.pdf');
+Route::get('purchases/filter/','TransactionAdmin@purchaseFilter')->name('purchaseFilter');
+
+Route::get('my/sales/', 'TransactionCashier@getSales')->name('sales.cashier.index');
+Route::get('my/sales/pdf/','TransactionCashier@salesPDF')->name('sales.cashier.pdf');
+Route::get('my/sales/filter/','TransactionCashier@salesFilter')->name('cashier.salesFilter');
+
+Route::get('my/purchases/', 'TransactionCashier@getPurchases')->name('purchase.cashier.index');
+Route::get('my/purchases/pdf','TransactionCashier@purchasePDF')->name('purchase.cashier.pdf');
+Route::get('my/purchases/filter/','TransactionCashier@purchaseFilter')->name('cashier.purchaseFilter');
+
+Route::get('cashier/sales/{id}', 'TransactionAdmin@getSalesId')->name('sales.cashier.id.index');
+Route::get('cashier/sales/pdf/{id}','TransactionAdmin@salesPDFId')->name('sales.cashier.id.pdf');
+Route::get('cashier/sales/filter/{id}','TransactionAdmin@salesFilterId')->name('cashier.salesFilter.id');
+
+Route::get('cashier/purchases/{id}', 'TransactionAdmin@getPurchasesId')->name('purchase.cashier.index.id');
+Route::get('cashier/purchases/pdf/{id}','TransactionAdmin@purchasePDFId')->name('purchase.cashier.pdf,id');
+Route::get('cashier/purchases/filter/{id}','TransactionAdmin@purchaseFilterId')->name('cashier.purchaseFilter.id');
+
 Route::get('bills/','TransactionController@bills')->name('bill.index');
 Route::get('stock/pdf/','TransactionController@stockPDF')->name('stock.pdf');
-Route::get('sales/pdf/','TransactionController@salesPDF')->name('sales.pdf');
-Route::post('purchases/filter/','TransactionController@purchaseFilter')->name('purchaseFilter');
-Route::post('sales/filter/','TransactionController@salesFilter')->name('salesFilter');
+Route::get('bill/{id}','TransactionController@getBill')->name('bill.show');
+Route::get('bill/{id}/pdf','TransactionController@downloadPdf')->name('bill.pdf');
+
+
+
 
 
 

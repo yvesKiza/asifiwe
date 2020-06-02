@@ -15,13 +15,11 @@ class ManufacturerController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth','admin']);
     }
     public function index()
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+      
         $manufacturers=Manufacturer::where('deleted',0)->get();
         return view('manufacturers.index',compact('manufacturers'));
     }
@@ -33,9 +31,7 @@ class ManufacturerController extends Controller
      */
     public function create()
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+      
         return view('manufacturers.create');
     }
 
@@ -79,9 +75,7 @@ class ManufacturerController extends Controller
      */
     public function show($id)
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+        
         $x=Manufacturer::where('id',$id)->where('deleted',0)->firstOrFail();
         return view('manufacturers.show',compact('x'));
     }
@@ -93,9 +87,7 @@ class ManufacturerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {if(!auth()->user()->isAdmin){
-        abort(403, "you must be an admin");
-    }
+    {
         $manufacturer=Manufacturer::where('id',$id)->where('deleted',0)->firstOrFail();
         return view('manufacturers.edit',compact('manufacturer'));
     }
@@ -109,9 +101,6 @@ class ManufacturerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
         $manufacturer=Manufacturer::findOrFail($id);
         Validator::make($request->all(),[
           
@@ -143,9 +132,7 @@ class ManufacturerController extends Controller
      */
     public function destroy($id)
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+       
         $x=Manufacturer::where('id',$id)->where('deleted',0)->firstOrFail();
         $x->deleted=1;
         $x->save();

@@ -15,13 +15,11 @@ class SupplierController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth','admin']);
     }
     public function index()
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+       
         $suppliers=Supplier::where('deleted',0)->get();
         return view('suppliers.index',compact('suppliers'));
     }
@@ -33,9 +31,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+       
         return view('suppliers.create');
     }
 
@@ -77,9 +73,7 @@ class SupplierController extends Controller
      */
     public function show($id)
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+        
         $supplier=Supplier::where('id',$id)->where('deleted',0)->firstOrFail();
         return view('suppliers.show',compact('supplier'));
     }
@@ -92,9 +86,7 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+        
         $supplier=Supplier::where('id',$id)->where('deleted',0)->firstOrFail();
         return view('suppliers.edit',compact('supplier'));
     }
@@ -139,9 +131,7 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
+        
         $supplier=Supplier::findOrFail($id);
         $supplier->deleted=1;
         $supplier->save();
