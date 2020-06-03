@@ -71,13 +71,23 @@ Route::get('cashier/sales/pdf/{id}','TransactionAdmin@salesPDFId')->name('sales.
 Route::get('cashier/sales/filter/{id}','TransactionAdmin@salesFilterId')->name('cashier.salesFilter.id');
 
 Route::get('cashier/purchases/{id}', 'TransactionAdmin@getPurchasesId')->name('purchase.cashier.index.id');
-Route::get('cashier/purchases/pdf/{id}','TransactionAdmin@purchasePDFId')->name('purchase.cashier.pdf,id');
+Route::get('cashier/purchases/pdf/{id}','TransactionAdmin@purchasePDFId')->name('purchase.cashier.pdf.id');
 Route::get('cashier/purchases/filter/{id}','TransactionAdmin@purchaseFilterId')->name('cashier.purchaseFilter.id');
 
 Route::get('bills/','TransactionController@bills')->name('bill.index');
 Route::get('stock/pdf/','TransactionController@stockPDF')->name('stock.pdf');
 Route::get('bill/{id}','TransactionController@getBill')->name('bill.show');
 Route::get('bill/{id}/pdf','TransactionController@downloadPdf')->name('bill.pdf');
+Route::get('dashboard/admin','TransactionAdmin@dash')->name('admin.dashboard');
+Route::get('dashboard/admin/monthChart','TransactionAdmin@month')->name('admin.dashboard.month');
+Route::get('dashboard/admin/dayChart','TransactionAdmin@day')->name('admin.dashboard.day');
+Route::get('dashboard/cashier','TransactionCashier@dash')->name('cashier.dashboard');
+Route::get('stock/removed','TransactionController@removed')->name('stock.removed');
+Route::get('stock/out','TransactionController@out')->name('stock.out');
+Route::get('stock/out/pdf','TransactionController@removePdf')->name('removed.pdf');
+Route::get('stock/remove','TransactionAdmin@bringRemove')->name('bring.remove');
+Route::Post('stock/remove','TransactionAdmin@remove')->name('remove');
+
 
 
 

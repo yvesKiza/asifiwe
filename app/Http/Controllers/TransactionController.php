@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
 use App\Bill;
 use App\Cart;
 use App\Product;
@@ -9,11 +10,11 @@ use App\Supplier;
 use Carbon\Carbon;
 use App\SoldProduct;
 use App\ProductStock;
+use App\RemovedProduct;
 use App\PurchasedProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use PDF;
 
 class TransactionController extends Controller
 {
@@ -167,7 +168,9 @@ class TransactionController extends Controller
             $stock=ProductStock::findOrFail($x->stock_id);
             if($x->quantity<=$stock->quantity){
                 $stock->quantity= $stock->quantity-$x->quantity;
-                $stock->save();
+             
+                    $stock->save();
+                
                 $sold=new SoldProduct;
                 $sold->product_id=$x->product_id;
                 $sold->expiry_date=$x->stock->expiry_date;
@@ -175,6 +178,10 @@ class TransactionController extends Controller
                 $sold->quantity=$x->quantity;
                 $sold->bill_id=$bill->id;
                 $sold->save();
+                
+                if($stock->quantity==0){
+                    $stock->delete();
+                }
             }
             else{
                 DB::rollback();
@@ -253,6 +260,24 @@ class TransactionController extends Controller
        throw $e;
    }
 
+    }
+    public function removed()
+    {
+        $stocks=RemovedProduct::all();
+        return view('transactions.removed',compact('stocks'));
+    }
+    public function out()
+    {
+        $stocks=Product::doesnthave('stock')->get();
+        return view('transactions.out',compact('stocks'));
+    }
+    public function removePdf()
+    {
+        $stocks=RemovedProduct::all();
+      
+        $pdf=PDF::loadView('file.removed',compact('stocks'));
+        $name="removed.pdf";
+        return $pdf->download($name);
     }
     
 }

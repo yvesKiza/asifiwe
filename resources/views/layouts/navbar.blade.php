@@ -6,9 +6,9 @@
     <title>Asifiwe Store</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     
-    <link href="{{asset('css/all.css')}}" rel="stylesheet" id="stylesheetLight">
-    @yield('css')
     
+    @yield('css')
+    <link href="{{asset('css/all.css')}}" rel="stylesheet" id="stylesheetLight">
        
        
         
@@ -85,12 +85,24 @@
                         <!-- Navigation -->
                         <ul class="navbar-nav mr-auto">
                           @auth
-                              
+                          @if(!auth()->user()->isAdmin)
+                          <li class="nav-item">
+                              <a class="nav-link" href="{{route('cashier.dashboard')}}" >
+                                 Dashboard
+                              </a>
+                             
+                            </li>
+                            @endif
                         
                           @if(auth()->user()->isAdmin)
                           
                           
-                         
+                          <li class="nav-item">
+                            <a class="nav-link" href="{{route('admin.dashboard')}}" >
+                               Dashboard
+                            </a>
+                           
+                          </li>
                          
                           <li class="nav-item dropdown">
                               <a class="nav-link dropdown-toggle" href="#" id="topnavDashboards" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -177,30 +189,76 @@
                                   </li>
                                   @endif
                                   <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle " href="#" id="topnavDecoder" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      Purchases
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="">
+                                      @if(auth()->user()->isAdmin)
+                                     <li>
+                                    
+                                     <a class="dropdown-item " href="{{route('purchase.index')}}">
+                                        Overview
+                                      </a>
+                                     </li>
+                                     @endif
+                                     <li>
+                                     <a class="dropdown-item " href="{{route('purchase.create')}}">
+                                        create
+                                      </a>
+                                     </li>
+                                     <a class="dropdown-item " href="{{route('purchase.cashier.index')}}">
+                                      My purchases
+                                    </a>
+                                   </li>
+                                      
+                                    </ul>
+                                  </li>
+                                  <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle " href="#" id="topnavDecoder" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                     Sales
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="">
+                                      @if(auth()->user()->isAdmin)
+                                     <li>
+                                    
+                                     <a class="dropdown-item " href="{{route('sales.index')}}">
+                                        Overview
+                                      </a>
+                                     </li>
+                                     @endif
+                                     <li>
+                                     <a class="dropdown-item " href="{{route('create.cart')}}">
+                                        create
+                                      </a>
+                                     </li>
+                                     <a class="dropdown-item " href="{{route('sales.cashier.index')}}">
+                                      My sales
+                                    </a>
+                                    <a class="dropdown-item " href="{{route('bill.index')}}">
+                                      bills
+                                    </a>
+                                   </li>
+                                      
+                                    </ul>
+                                  </li>
+                                  <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle " href="#" id="topnavSubscription" role="button" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                                      Transactions
+                                     Stock
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="topnavSubscription">
                                       
                                     <a class="dropdown-item " href="{{route('stock.index')}}">
-                                      stock
+                                     Overview
                                     </a>
                                    
-                                    <a class="dropdown-item " href="{{route('purchase.index')}}">
-                                        purchase 
+                                    <a class="dropdown-item " href="{{route('stock.removed')}}">
+                                        Removed Product 
                                       </a>
-                                    <a class="dropdown-item " href="{{route('sales.index')}}">
-                                        sales
+                                    <a class="dropdown-item " href="{{route('stock.out')}}">
+                                       out of stock
                                       </a>
-                                      <a class="dropdown-item " href="{{route('bill.index')}}">
-                                        bills
-                                      </a>
-                                    <a class="dropdown-item " href="{{route('create.cart')}}">
-                                       new sale
-                                      </a>
-                                    <a class="dropdown-item " href="{{route('purchase.create')}}">
-                                        new purchase
-                                      </a>
+                                     
+                                   
                                       
                                     </div>
                                   </li>

@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
+use App\Product;
 use Carbon\Carbon;
 use App\SoldProduct;
+use App\ProductStock;
+use App\RemovedProduct;
 use App\PurchasedProduct;
 use Illuminate\Http\Request;
-use PDF;
+use Illuminate\Support\Facades\DB;
 
 class transactionCashier extends Controller
 {
@@ -102,4 +106,40 @@ class transactionCashier extends Controller
         }
         return view('transactions.cashier.sales',compact('stocks','total'));
     }   
+    public function dash(){
+        $user=auth()->user();
+        $salesAll=SoldProduct::join('bills', 'sold_products.bill_id', '=', 'bills.id')->where('bills.user_id',$user->id)->get()->sum(function($t){ 
+            return $t->quantity * $t->selling_price; 
+        });
+        
+        $salesToday=SoldProduct::join('bills', 'sold_products.bill_id', '=', 'bills.id')->where('bills.user_id',$user->id)->whereDate('sold_products.created_at', DB::raw('CURDATE()'))->get()->sum(function($t){ 
+            return $t->quantity * $t->selling_price; 
+        });
+        $salesMonth=SoldProduct::join('bills', 'sold_products.bill_id', '=', 'bills.id')->where('bills.user_id',$user->id)->where(
+            'sold_products.created_at', '>=', Carbon::now()->startOfMonth()->subMonth()->toDateString()
+        )->get()->sum(function($t){ 
+            return $t->quantity * $t->selling_price; 
+        });
+        $purchasesAll=PurchasedProduct::where('user_id',$user->id)->get()->sum(function($t){ 
+            return $t->quantity * $t->buying_price; 
+        });
+        
+        $purchasesToday=PurchasedProduct::where('user_id',$user->id)->whereDate('created_at', DB::raw('CURDATE()'))->get()->sum(function($t){ 
+            return $t->quantity * $t->buying_price; 
+        });
+        $purchasesMonth=PurchasedProduct::where('user_id',$user->id)->where(
+            'created_at', '>=', Carbon::now()->startOfMonth()->subMonth()->toDateString()
+        )->get()->sum(function($t){ 
+            return $t->quantity * $t->buying_price; 
+        });
+        $stock=ProductStock::all()->sum(function($t){ 
+            return $t->product->selling_price * $t->quantity; 
+        });
+        $out=Product::doesnthave('stock')->count();
+        $removed=RemovedProduct::where('reason','expired')->count();
+
+
+
+        return view('transactions.cashier.dashboard',compact('salesAll','salesToday','salesMonth','purchasesAll','purchasesToday','purchasesMonth','stock','removed','out'));
+    } 
 }

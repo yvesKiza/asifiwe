@@ -48,7 +48,7 @@
     </div>
      </div>
      <div class="float-left mt-5 pl-5">
-      <form action="{{route('sales.cashier.pdf')}}" method="get" id="form">
+      <form action="{{route('sales.cashier.id.pdf',$user->id)}}" method="get" id="form">
         <input type="hidden" name="start" id="start" value="">
         <input type="hidden" name="end" id="end" value="">
         <button class="btn btn-primary"  id="print" type="submit">
@@ -70,9 +70,9 @@
                 <div class="col">
                   
                   <!-- Pretitle -->
-                  <h6 class="header-pretitle">
-                   My sales
-                  </h6>
+                  <h4 class="header-pretitle">
+                    Cashier : {{$user->name}}
+                  </h4>
 
                   <!-- Title -->
                   <h1 class="header-title">
@@ -287,7 +287,7 @@ $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
 function getData(){
  $.ajax({
                          type: 'GET',
-                         url: '{{route('cashier.salesFilter')}}',
+                         url: '{{route('cashier.salesFilter.id',$user->id)}}',
                          data: {
                           
                            "start": startDateData,

@@ -8,9 +8,9 @@
             <div class="col">
               
               <!-- Pretitle -->
-              <h6 class="header-pretitle">
-              My sales
-              </h6>
+              <h4 class="header-pretitle">
+                Cashier : {{$user->name}}
+              </h4>
   
               <!-- Title -->
               <h1 class="header-title">

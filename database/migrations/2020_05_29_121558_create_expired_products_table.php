@@ -13,12 +13,15 @@ class CreateExpiredProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('expired_products', function (Blueprint $table) {
+        Schema::create('removed_products', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->date('expiry_date');
             
             $table->integer('quantity');
+            $table->string('reason');
+            $table->unsignedBigInteger('user_id')->nullable();
+           
          
             $table->foreign('product_id')->references('id')->on('products');
            

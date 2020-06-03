@@ -1,7 +1,5 @@
 @extends('layouts.navbar')
 @section('css')
-
-<link rel="stylesheet" href="{{asset('css/daterangepicker.css')}}">
 <style>
 
 .pagination {
@@ -39,27 +37,6 @@
 
 @section('content')
 <div class="container-fluid">
-  <div class="row">
-  <div class="mt-5 float-right " style="width:20rem">
-          
-    <div id="reportrange" class="form-control" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-    <i class="fe fe-calendar"></i>&nbsp;
-    <span></span> <i class="fe fe-chevron-down"></i>
-    </div>
-     </div>
-     <div class="float-left mt-5 pl-5">
-      <form action="{{route('purchase.cashier.pdf')}}" method="get" id="form">
-        <input type="hidden" name="start" id="start" value="">
-        <input type="hidden" name="end" id="end" value="">
-        <button class="btn btn-primary"  id="print" type="submit">
-          Print
-        </button>
-      </form>
-    </div>
-  </div>
-    
-
-   <div class="jqueryContent">
 <div class="row justify-content-center">
         <div class="col-12">
           
@@ -71,23 +48,16 @@
                   
                   <!-- Pretitle -->
                   <h6 class="header-pretitle">
-                  My purchases
+                    OVERVIEW
                   </h6>
 
                   <!-- Title -->
                   <h1 class="header-title">
-                  Purchases
+               Removed   Stock
                   </h1>
 
                 </div>
-                <div class="col-auto">
-                  
-                  <!-- Button -->
-                <a href="{{route('purchase.create')}}" class="btn btn-primary">
-                    New Purchase
-                  </a>
-                  
-                </div>
+               
               </div> <!-- / .row -->
               <div class="row mt-5">
                 <div class="col-8 col-lg-4 col-xl-3">
@@ -99,22 +69,16 @@
       
                             <!-- Title -->
                             <h6 class="card-title text-uppercase text-muted mb-2">
-                             Total purchases
+                            Products count
                             </h6>
                             
                             <!-- Heading -->
                             <span class="h2 mb-0">
-                             {{$total}}
+                             {{$stocks->count()}}
                             </span>
         
                             <!-- Badge -->
                          
-        
-                          </div>
-                          <div class="col-auto">
-                            
-                            <!-- Icon -->
-                            <span class="h2 fe fe-briefcase text-muted mb-0"></span>
         
                           </div>
                        
@@ -126,9 +90,6 @@
         
               </div>
             </div>
-            
-             
-              </div>
           </div>
 
           <!-- Card -->
@@ -148,7 +109,9 @@
                   </form>
                   
                 </div>
-               
+                <div class="col-auto">
+                  <a href="{{route('removed.pdf')}}" class="btn btn-primary">print</a>
+               </div>
               </div>
             </div>
             
@@ -166,17 +129,16 @@
                                     <a href="#" class="text-muted sort" data-sort="expiry_date">expiry date</a>
                                   </th>
                                   <th scope="col">
-                                    <a href="#" class="text-muted sort" data-sort="price">price</a>
-                                  </th>
-                                  <th scope="col">
                                     <a href="#" class="text-muted sort" data-sort="quantity">quantity</a>
                                   </th>
                                   <th scope="col">
-                                    <a href="#" class="text-muted sort" data-sort="supplier">supplier</a>
+                                    <a href="#" class="text-muted sort" data-sort="reason">reason</a>
                                   </th>
-                                 
                                   <th scope="col">
-                                    <a href="#" class="text-muted sort" data-sort="date">Added on</a>
+                                    <a href="#" class="text-muted sort" data-sort="user">user</a>
+                                  </th>
+                                  <th scope="col">
+                                    <a href="#" class="text-muted sort" data-sort="date">date</a>
                                   </th>
                                
                                   
@@ -192,14 +154,13 @@
                              
                                   <td class="product">{{$x->product->full_name}}</td>
                                   <td class="expiry_date">{{$x->expiry_date}}</td>
-                                  <td class="price">{{$x->buying_price}}</td>
+                                  
                                
                                   <td class="quantity">{{$x->quantity}}</td>
-                                  <td class="supplier">{{$x->supplier->name}}</td>
-                            
-                                  <td class="date"><time>{{$x->created_at->format('d M Y')}}</time></td>
-                                
-                                
+                                  <td class="reason">{{$x->reason}}</td>
+                                  
+                                  <td class="user">{{$x->user?$x->user->name:"----"}}</td>
+                                  <td class="date">{{$x->created_at->format('d M Y h:m')}}</td>
                                  
                                        
                                             </tr>
@@ -224,103 +185,20 @@
                             </table>
                           </div>
             </div>
-            <script type="text/javascript">
-
-              var userList = new List('paymentTable', { 
-                  valueNames:  [ 'no', 'product','expiry_date','quantity','supplier','date' ],
-                page: 10,
-                pagination: true
-              });	
-             
-          
-      
-  });
-              
-              </script>
             </div>
         </div>
 </div>
         </div>
-
-
+</div>
 @endsection
 @section('scripts')
-<script src="{{asset('js/moment.min.js')}}"></script>
-<script src="{{asset('js/daterangepicker.js')}}"></script>
 <script type="text/javascript">
 
-var startDateData;
-var endDateData;
-
-
-
-$(function() {
-
-var start = moment().startOf('month');
-var end =moment().endOf('month');
-
-function cb(start, end) {
-    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-    $('#start ').val(start.format('YYYY-MM-DD'));
-    $('#end ').val(end.format('YYYY-MM-DD'));
-}
-
-$('#reportrange').daterangepicker({
-    startDate: start,
-    endDate: end,
-    ranges: {
-       'Today': [moment(), moment()],
-       'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-       'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-       'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-       'This Month': [moment().startOf('month'), moment().endOf('month')],
-       'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    }
-}, cb);
-
-cb(start, end);
-
-});
-$('#reportrange').on('apply.daterangepicker', function(ev, picker) {
- 
- startDateData=picker.startDate.format('YYYY-MM-DD');
- endDateData=picker.endDate.format('YYYY-MM-DD');
- $('#start ').val(startDateData);
-    $('#end ').val(endDateData);
- getData();
-});
-
-function getData(){
- $.ajax({
-                         type: 'GET',
-                         url: '{{route('cashier.purchaseFilter')}}',
-                         data: {
-                          
-                           "start": startDateData,
-                           "end":endDateData,
-                           
-                           },
-                       
-                         dataType: 'json',
-                        
-                         
-                         
-                         success: function (data) {
-                           
-                            
-
-                        
-                             $('.jqueryContent').html(data.html);
-                             
-                         },
-                         error: function (xhr, type) {
-                             alert(alert(xhr.responseText));
-                         },
-                        
-                     });
-}
-
-
+var userList = new List('paymentTable', { 
+    valueNames:  [ 'no', 'product','expiry_date','quantity','reason','user','date' ],
+  page: 10,
+  pagination: true
+});	
 
 </script>
 @endsection

@@ -9,9 +9,9 @@
             <div class="col">
               
               <!-- Pretitle -->
-              <h6 class="header-pretitle">
-                My purchases
-              </h6>
+              <h4 class="header-pretitle">
+                Cashier : {{$user->name}}
+              </h4>
   
               <!-- Title -->
               <h1 class="header-title">
@@ -19,14 +19,7 @@
               </h1>
   
             </div>
-            <div class="col-auto">
-              
-              <!-- Button -->
-            <a href="{{route('purchase.create')}}" class="btn btn-primary">
-                New Purchase
-              </a>
-              
-            </div>
+           
           </div> <!-- / .row -->
           <div class="row mt-5">
             <div class="col-8 col-lg-4 col-xl-3">
