@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth','admin']);
     }
     public function getUser()
     {
@@ -52,6 +52,7 @@ class UserController extends Controller
             'CNIC'=>'bail|required|string|min:2|max:100|unique:users,CNIC',
             'address'=>'required|string|min:2|max:100',
             'role'=>'required|in:admin,cashier',
+            'password'=>'required|min:8',
              
              
            
@@ -71,7 +72,7 @@ class UserController extends Controller
             $user->email=$request->email;
             $user->address=$request->address;
         
-            $user->password=Hash::make("wapiwapi");
+            $user->password=Hash::make($request->password);
         
             $user->isActive=1;
             $user->CNIC=$request->CNIC;
@@ -85,7 +86,7 @@ class UserController extends Controller
             
        
          DB::commit();
-         return redirect()->route('user.index', $user->id);
+         return redirect()->route('user.index');
          } catch(\Exception $e)
          {
             DB::rollback();
@@ -103,51 +104,11 @@ class UserController extends Controller
     }
     public function deleteUser($id){
         
-        if(!auth()->user()->isAdmin){
-            abort(403, "you must be an admin");
-        }
-
+      
         $user=User::findOrfail($id);
         $user->isActive=0;
         $user->deleted=1;
         $user->save();
        return redirect()->route('user.index');
-    }
-    public function updateEmail(Request $request)
-    {
-        $user = Auth::user();
-       
-        
-        Validator::make($request->all(), [
-           
-            'password' => ['required', 'string', 'max:255',new PasswordRule],
-            'email'=>['bail','email','unique:users,email,'.$user->id],
-            
-        ])->validate();
-        
-       
-       
-        
-         
-          $user->email=$request->email;
-         
-          $user->save();
-          return redirect()->back()->with("success","email updated successfully");
-    }
-   
-    public function updatePassword(Request $request){
-        Validator::make($request->all(), [
-           
-            'current' => ['required', 'string',new checkPassword],
-            'new'=>'required|min:8|max:255',
-            'password_confirmation' => 'same:new',
-            
-            
-        ])->validate();
-        $user = Auth::user();
-        
-           $user->password= Hash::make($request->new);
-           $user->save();
-          return redirect()->back()->with("success","password updated successfully");
     }
 }

@@ -57,14 +57,16 @@
                   </h1>
 
                 </div>
+                @if(auth()->user()->isAdmin)
                 <div class="col-auto">
                   
                   <!-- Button -->
-                <a href="{{route('purchase.create')}}" class="btn btn-primary">
-                    New Purchase
+                <a href="{{route('bring.remove')}}" class="btn btn-primary">
+                   Delete stock
                   </a>
                   
                 </div>
+                @endif
               </div> <!-- / .row -->
               <div class="row mt-5">
                 <div class="col-8 col-lg-4 col-xl-3">

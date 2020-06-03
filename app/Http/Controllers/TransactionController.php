@@ -10,10 +10,14 @@ use App\Supplier;
 use Carbon\Carbon;
 use App\SoldProduct;
 use App\ProductStock;
+use App\Custom\Expired;
 use App\RemovedProduct;
 use App\PurchasedProduct;
+use App\Rules\checkPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
@@ -21,6 +25,7 @@ class TransactionController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        Expired::expired();
     }
     public function getStock()
     {
@@ -200,7 +205,7 @@ class TransactionController extends Controller
     }
     public function bills()
     {
-       $stocks=Bill::all();
+       $stocks=Bill::orderBy('created_at', 'DESC')->get();
        return view('transactions.billIndex',compact('stocks'));
 
     }
@@ -253,17 +258,18 @@ class TransactionController extends Controller
 
         }
         DB::commit();
-        return redirect()->route('purchase.index');
+       
     } catch(\Exception $e)
     {
        DB::rollback();
        throw $e;
    }
+   return redirect()->route('purchase.cashier.index');
 
     }
     public function removed()
     {
-        $stocks=RemovedProduct::all();
+        $stocks=RemovedProduct::orderBy('created_at', 'DESC')->get();
         return view('transactions.removed',compact('stocks'));
     }
     public function out()
@@ -278,6 +284,53 @@ class TransactionController extends Controller
         $pdf=PDF::loadView('file.removed',compact('stocks'));
         $name="removed.pdf";
         return $pdf->download($name);
+    }
+   
+    public function updateEmail(Request $request)
+    {
+        $user = Auth::user();
+       
+        
+        Validator::make($request->all(), [
+           
+            'password' => ['required', 'string', 'max:255',new checkPassword],
+            'email'=>['bail','email','unique:users,email,'.$user->id],
+            
+        ])->validate();
+        
+       
+       
+        
+         
+          $user->email=$request->email;
+         
+          $user->save();
+          return redirect()->back()->with("success","email updated successfully");
+    }
+   
+    public function updatePassword(Request $request){
+        Validator::make($request->all(), [
+           
+            'current' => ['required', 'string',new checkPassword],
+            'new'=>'required|min:8|max:255',
+            'password_confirmation' => 'same:new',
+            
+            
+        ])->validate();
+        $user = Auth::user();
+        
+           $user->password= Hash::make($request->new);
+           $user->save();
+          return redirect()->back()->with("success","password updated successfully");
+    }
+    public function editPassword(){
+        return view('user.editPassword');
+    }
+    public function editEmail(){
+        
+          $user=auth()->user();
+         
+          return view('user.editProfileEmail',compact('user'));
     }
     
 }

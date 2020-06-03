@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\SoldProduct;
 use App\ProductStock;
 use App\RemovedProduct;
+use App\Custom\Expired;
 use App\PurchasedProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,7 @@ class transactionCashier extends Controller
     public function __construct()
     {
         $this->middleware(['auth']);
+        Expired::expired();
     }
     public function getPurchases(){
         $start = Carbon::now()->startOfMonth();

@@ -87,6 +87,11 @@ Route::get('stock/out','TransactionController@out')->name('stock.out');
 Route::get('stock/out/pdf','TransactionController@removePdf')->name('removed.pdf');
 Route::get('stock/remove','TransactionAdmin@bringRemove')->name('bring.remove');
 Route::Post('stock/remove','TransactionAdmin@remove')->name('remove');
+Route::get('user/profile/edit-email', 'TransactionController@editEmail')->name('user.editEmail');
+Route::get('user/profile/edit-password', 'TransactionController@editPassword')->name('user.editPassword');
+
+Route::patch('user/profile/email', 'TransactionController@updateEmail')->name('user.updateEmail');
+Route::patch('user/profile/password', 'TransactionController@updatePassword')->name('user.updatePassword');
 
 
 

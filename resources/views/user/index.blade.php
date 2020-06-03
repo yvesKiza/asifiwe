@@ -173,6 +173,12 @@
                                                   <a href="{{route('user.show',$x->id)}}" class="dropdown-item">
                                                      show
                                                     </a>
+                                                    <a href="{{route('purchase.cashier.index.id',$x->id)}}" class="dropdown-item">
+                                                     Purchases
+                                                     </a>
+                                                     <a href="{{route('sales.cashier.id.index',$x->id)}}" class="dropdown-item">
+                                                      Sales
+                                                     </a>
                                                    
                                                   </div>
                                                 </div>

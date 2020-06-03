@@ -67,6 +67,11 @@
                     {!!Form::select('role', [''=>'select role','admin' => 'admin', 'cashier' => 'cashier'],'',['class'=>'form-control'])!!}
 
               </div>
+              <div class="form-group">
+                {!!Form::label('password','password :')!!}
+                {!!Form::password('password',null,['class'=>'form-control','required'])!!}
+
+          </div>
 
 
         
